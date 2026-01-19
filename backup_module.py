@@ -7,7 +7,7 @@ from database import Database
 from pathlib import Path
 from PySide6.QtWidgets import (
     QWidget, QFormLayout, QHBoxLayout, QPushButton,
-    QLabel, QListWidget, QFileDialog, QMessageBox
+    QLabel, QListWidget, QFileDialog, QMessageBox, QLineEdit
 )
 
 # 初始化日志
@@ -97,7 +97,9 @@ class BackupWidget(QWidget):
         super().__init__(parent)
         self.backup_status = {}
         self.backup_manager = BackupManager()
-        self.backup_output_label = QLabel("请选择文件输出路径")
+        self.backup_output_label = QLineEdit()
+        self.backup_output_label.setPlaceholderText("未选择输出路径，点击右侧按钮选择")
+        self.backup_output_label.setReadOnly(True)
         self.backup_list_widget = QListWidget()
         self.init_ui()
         self.refresh_ui()  # 初始化UI数据
@@ -127,19 +129,23 @@ class BackupWidget(QWidget):
         h_layout.addWidget(self.del_btn)
         h_layout.addWidget(self.edit_btn)
         h_layout.addWidget(self.backup_btn)
-        h_layout.addWidget(self.select_output_btn)
+        # h_layout.addWidget(self.select_output_btn)
 
         # 组装UI
         fl.addRow(h_layout)
-        fl.addWidget(self.backup_output_label)
-        fl.addWidget(QLabel("备份文件列表"))
-        fl.addWidget(self.backup_list_widget)
+        output_file_operate_layout = QHBoxLayout()
+        output_file_operate_layout.addWidget(self.backup_output_label)  # 路径框占主要宽度
+        output_file_operate_layout.addWidget(self.select_output_btn)  # 按钮紧跟右侧
+        # 可选：设置布局间距，优化美观度
+        output_file_operate_layout.setSpacing(10)
+        fl.addRow("当前输出路径:", output_file_operate_layout)
+        fl.addRow("备份文件列表:",self.backup_list_widget)
 
     def refresh_ui(self):
         """刷新备份列表和输出路径显示"""
         # 刷新输出路径
         output_path = self.backup_manager.get_output_path()
-        self.backup_output_label.setText(f"当前输出路径: {output_path}")
+        self.backup_output_label.setPlaceholderText(f"{output_path}")
         # 刷新备份列表
         self.backup_list_widget.clear()
         backup_items = self.backup_manager.get_all_backup_items()
@@ -147,7 +153,7 @@ class BackupWidget(QWidget):
 
     def on_add_backup_path(self):
         """新增备份路径按钮事件"""
-        path, _ = QFileDialog.getOpenFileName(self, "选择文件/文件夹")
+        path, _ = QFileDialog.getOpenFileName(self, "选择文件")
         if self.backup_manager.add_backup_path(path):
             self.refresh_ui()
 

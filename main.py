@@ -1,32 +1,20 @@
-import os
 import sys
 import psutil
 import time
 
 from logger import get_logger
-from database import Database
 from PySide6.QtWidgets import (
-    QMainWindow, QTabWidget, QWidget, QFormLayout, QApplication,
-    QGridLayout, QTableWidgetItem, QLabel, QTableWidget, QVBoxLayout,
-    QListWidget, QPushButton, QHBoxLayout, QFileDialog
+    QMainWindow, QTabWidget, QWidget, QApplication,
+    QGridLayout, QTableWidgetItem, QLabel, QTableWidget
 )
 from PySide6.QtCore import QTimer
 
 # 导入拆分后的备份模块
 from backup_module import BackupWidget
+# 导入拆分后的文件模块
+from split_file_module import SplitFileWidget
 
 logger = get_logger(__name__)
-
-def tab_decorator(title):
-    """标签页创建装饰器，自动处理QWidget的创建和标签页添加"""
-    def decorator(func):
-        def wrapper(self, tab, *args, **kwargs):
-            widget = QWidget()
-            func(self, tab, widget, *args, **kwargs)
-            tab.addTab(widget, title)
-        return wrapper
-    return decorator
-
 
 class MainWindow(QMainWindow):
     """主窗口类，包含菜单栏和多个标签页"""
@@ -120,17 +108,14 @@ class MainWindow(QMainWindow):
         backup_widget = BackupWidget(self)
         tab.addTab(backup_widget, "📁 备份")
 
-    # 其他标签页（保持原有逻辑）
-    @tab_decorator("🔗 文件分割")
-    def create_split_ui(self, tab, widget):
+    def create_split_ui(self, tab):
+        split_widget = SplitFileWidget(self)
+        tab.addTab(split_widget, "✂️ 文件分割")
+
+    def create_excel_ui(self, tabs):
         pass
 
-    @tab_decorator("📝 Excel转实体类")
-    def create_excel_ui(self, tabs, widget):
-        pass
-
-    @tab_decorator("🔧 设置")
-    def create_setup_ui(self, tabs, widget):
+    def create_setup_ui(self, tabs):
         pass
 
 
