@@ -13,6 +13,8 @@ from PySide6.QtCore import QTimer
 from backup_module import BackupWidget
 # 导入拆分后的文件模块
 from split_file_module import SplitFileWidget
+# 导入excel转java实体模块
+from excel_to_entity_module import ExcelToEntityWidget
 
 logger = get_logger(__name__)
 
@@ -113,7 +115,8 @@ class MainWindow(QMainWindow):
         tab.addTab(split_widget, "✂️ 文件分割")
 
     def create_excel_ui(self, tabs):
-        pass
+        excel_widget = ExcelToEntityWidget(self)
+        tabs.addTab(excel_widget, "🗄️ Excel转实体")
 
     def create_setup_ui(self, tabs):
         pass

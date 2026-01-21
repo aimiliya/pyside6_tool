@@ -7,8 +7,10 @@ from typing import Any, List, Dict, Optional, Tuple
 class Database:
     """SQLite数据库封装类，提供简单便捷的增删改查操作"""
     
-    def __init__(self, db_path: str):
-        self.db_path = db_path
+    def __init__(self):
+        # 初始化数据库
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        self.db_path = os.path.join(base_dir, "backup.db")
         self._ensure_database_exists()
     
     def _ensure_database_exists(self):
@@ -193,6 +195,8 @@ class Database:
         """获取表结构信息"""
         sql = f"PRAGMA table_info({table_name})"
         return self.fetch_all(sql)
+
+
 
 
 class QueryBuilder:

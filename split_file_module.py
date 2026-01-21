@@ -14,12 +14,8 @@ logger = get_logger(__name__)
 class SplitFileWidget(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
-
         # 初始化数据库
-        base_dir = os.path.dirname(os.path.abspath(__file__))
-        db_path = os.path.join(base_dir, "backup.db")
-        logger.info(f"数据库路径: {db_path}")
-        self.db = Database(db_path)
+        self.db = Database()
 
         self.input_edit = QLineEdit()
         self.input_edit.setPlaceholderText("未选择文件，点击右侧按钮选择")
